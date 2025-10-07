@@ -1,0 +1,12 @@
+# Node modules
+node_modules/
+
+# Reports hasil test
+reports/
+
+# System / Editor
+.DS_Store
+Thumbs.db
+
+# Environment files (jika ada)
+.env

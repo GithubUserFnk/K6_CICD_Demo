@@ -1,0 +1,33 @@
+name: k6 Cloud Load Test
+
+on:
+  push:
+    branches:
+      - '**'   # jalan di semua branch
+
+jobs:
+  run-cloud-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup K6 di runner
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      # 3️⃣ Jalankan script runTests.sh di root repo
+      - name: Run k6 test via shell script
+        run: bash ./runTests.sh
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+
+      # 4️⃣ Upload hasil test (laporan JSON/HTML) sebagai artifact
+      - name: Upload k6 report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-test-reports
+          path: reports/
