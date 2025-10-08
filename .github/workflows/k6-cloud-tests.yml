@@ -1,0 +1,89 @@
+name: K6 Cloud Tests
+
+on:
+  push:              # Jalan otomatis di semua branch
+    branches:
+      - '**'
+  pull_request:      # Jalan otomatis di semua PR
+  workflow_dispatch: # Bisa dijalankan manual dari tab Actions
+
+jobs:
+  regression:
+    name: 🧪 Regression Test (K6 Cloud)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup K6 CLI
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      # 3️⃣ (Opsional) Debug environment variable
+      - name: Debug env
+        run: |
+          echo "🔍 Checking environment variables..."
+          echo "GITHUB_ACTIONS = $GITHUB_ACTIONS"
+          echo "K6_CLOUD_TOKEN available: ${{ secrets.K6_CLOUD_TOKEN != '' }}"
+          echo "K6_CLOUD_PROJECT_ID available: ${{ secrets.K6_CLOUD_PROJECT_ID != '' }}"
+          echo "------------------------------"
+          env | sort | grep -E "K6|GITHUB"
+
+      # 4️⃣ Jalankan regression test script
+      - name: Run Regression Tests
+        run: |
+          chmod +x ./scripts/runTestsRegression.sh
+          bash ./scripts/runTestsRegression.sh
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+
+      # 5️⃣ Upload hasil test (optional)
+      - name: Upload Regression Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-reports
+          path: reports/regression/
+
+  performance:
+    name: ⚡ Performance Test (K6 Cloud)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup K6 CLI
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
+      # 3️⃣ (Opsional) Debug environment variable
+      - name: Debug env
+        run: |
+          echo "🔍 Checking environment variables..."
+          echo "GITHUB_ACTIONS = $GITHUB_ACTIONS"
+          echo "K6_CLOUD_TOKEN available: ${{ secrets.K6_CLOUD_TOKEN != '' }}"
+          echo "K6_CLOUD_PROJECT_ID available: ${{ secrets.K6_CLOUD_PROJECT_ID != '' }}"
+          echo "------------------------------"
+          env | sort | grep -E "K6|GITHUB"
+
+      # 4️⃣ Jalankan performance test script
+      - name: Run Performance Tests
+        run: |
+          chmod +x ./scripts/runTestsPerformance.sh
+          bash ./scripts/runTestsPerformance.sh
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+
+      # 5️⃣ Upload hasil test (optional)
+      - name: Upload Performance Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-reports
+          path: reports/performance/
