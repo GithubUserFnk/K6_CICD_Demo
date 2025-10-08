@@ -30,6 +30,9 @@ jobs:
           echo "K6_CLOUD_PROJECT_ID available: ${{ secrets.K6_CLOUD_PROJECT_ID != '' }}"
           echo "------------------------------"
           env | sort | grep -E "K6|GITHUB"
+      
+      - name: Prepare report folder
+        run: mkdir -p reports
 
       # 4️⃣ Jalankan regression test script
       - name: Run Regression Tests
@@ -40,12 +43,17 @@ jobs:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
 
+      - name: Debug report folder
+        if: always()
+        run: |
+          echo "📁 Listing reports folder content:"
+          ls -R reports || echo "⚠️ No reports folder found"
+
       # 5️⃣ Upload hasil test (optional)
       - name: Upload Regression Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: regression-reports
           path: reports/
 
   performance:
@@ -71,6 +79,9 @@ jobs:
           echo "------------------------------"
           env | sort | grep -E "K6|GITHUB"
 
+      - name: Prepare report folder
+        run: mkdir -p reports
+
       # 4️⃣ Jalankan performance test script
       - name: Run Performance Tests
         run: |
@@ -79,11 +90,16 @@ jobs:
         env:
           K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
           K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+      
+      - name: Debug report folder
+        if: always()
+        run: |
+          echo "📁 Listing reports folder content:"
+          ls -R reports || echo "⚠️ No reports folder found"
 
       # 5️⃣ Upload hasil test (optional)
       - name: Upload Performance Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: performance-reports
           path: reports/
