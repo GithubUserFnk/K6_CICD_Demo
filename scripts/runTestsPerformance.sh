@@ -15,22 +15,21 @@ if [[ ! -f "$TEST_FILE" ]]; then
 fi
 
 # 🌩️ Tentukan mode eksekusi
-if [[ -n "$K6_CLOUD_TOKEN" && -n "$K6_CLOUD_PROJECT_ID" ]]; then
+if [[ -n "$K6_CLOUD_TOKEN" ]]; then
   echo "☁️ Running in K6 Cloud mode"
   RUN_CMD="k6 cloud"
-  CLOUD_ARGS="--token $K6_CLOUD_TOKEN --project-id $K6_CLOUD_PROJECT_ID"
 else
   echo "💻 Running locally"
   RUN_CMD="k6 run"
-  CLOUD_ARGS=""
 fi
 
 # 🧪 Jalankan test
 echo "▶️  Running: $TEST_FILE ..."
-$RUN_CMD "$TEST_FILE" $CLOUD_ARGS --no-usage-report
+$RUN_CMD "$TEST_FILE" --no-usage-report
+TEST_EXIT_CODE=$?
 
 # 📊 Cek hasil exit code
-if [[ $? -eq 0 ]]; then
+if [[ $TEST_EXIT_CODE -eq 0 ]]; then
   echo "✅ K6 performance test finished successfully"
 else
   echo "❌ K6 performance test failed (thresholds not met)"
@@ -38,4 +37,8 @@ fi
 
 echo "======================================="
 echo "🎯 Performance Test Completed"
+echo "📁 Report Folder: reports/performance/"
 echo "======================================="
+
+# Exit dengan kode sesuai hasil
+exit $TEST_EXIT_CODE

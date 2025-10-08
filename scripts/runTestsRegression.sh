@@ -7,14 +7,12 @@ echo "🚀 Starting Sequential K6 Regression Test Execution"
 echo "======================================="
 
 # Cek mode eksekusi: Cloud vs Local
-if [[ -n "$K6_CLOUD_TOKEN" && -n "$K6_CLOUD_PROJECT_ID" ]]; then
+if [[ -n "$K6_CLOUD_TOKEN" ]]; then
   echo "☁️ Running in K6 Cloud mode"
   RUN_CMD="k6 cloud"
-  CLOUD_ARGS="--token $K6_CLOUD_TOKEN --project-id $K6_CLOUD_PROJECT_ID"
 else
   echo "💻 Running locally"
   RUN_CMD="k6 run"
-  CLOUD_ARGS=""
 fi
 
 # Cari semua file test JS di folder regression
@@ -34,10 +32,11 @@ for TEST_FILE in $TEST_FILES; do
   echo "▶️  Running regression test: $TEST_NAME"
   echo "---------------------------------------"
 
-  $RUN_CMD "$TEST_FILE" $CLOUD_ARGS \
-    --no-thresholds --no-usage-report
+  # Jalankan test tanpa --token/--project-id (karena sudah dari env)
+  $RUN_CMD "$TEST_FILE" --no-thresholds --no-usage-report
+  TEST_EXIT_CODE=$?
 
-  if [[ $? -eq 0 ]]; then
+  if [[ $TEST_EXIT_CODE -eq 0 ]]; then
     echo "✅ $TEST_NAME finished successfully!"
     ((PASS_COUNT++))
   else
@@ -51,4 +50,12 @@ echo "======================================="
 echo "🎯 All regression tests finished!"
 echo "✅ Passed: $PASS_COUNT"
 echo "❌ Failed: $FAIL_COUNT"
+echo "📁 Report Folder: reports/regression/"
 echo "======================================="
+
+# Exit dengan kode error kalau ada yang gagal
+if [[ $FAIL_COUNT -gt 0 ]]; then
+  exit 1
+else
+  exit 0
+fi
