@@ -2,6 +2,9 @@
 set -m
 set +e
 
+# 🗂️ Pastikan folder laporan ada
+mkdir -p reports/regression
+
 echo "======================================="
 echo "🚀 Starting Sequential K6 Regression Test Execution"
 echo "======================================="

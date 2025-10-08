@@ -2,6 +2,9 @@
 set -m
 set +e
 
+# 🗂️ Pastikan folder laporan ada
+mkdir -p reports/performance
+
 echo "======================================="
 echo "🚀 Starting K6 Performance Test"
 echo "======================================="
