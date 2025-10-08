@@ -3,7 +3,7 @@ set -m
 set +e
 
 # 🗂️ Pastikan folder laporan ada
-mkdir -p reports/regression
+mkdir -p reports/
 
 echo "======================================="
 echo "🚀 Starting Sequential K6 Regression Test Execution"
@@ -67,7 +67,7 @@ echo "======================================="
 echo "🎯 All regression tests finished!"
 echo "✅ Passed: $PASS_COUNT"
 echo "❌ Failed: $FAIL_COUNT"
-echo "📁 Report Folder: reports/regression/"
+echo "📁 Report Folder: reports/"
 echo "======================================="
 
 # 🚪 Exit dengan kode sesuai hasil

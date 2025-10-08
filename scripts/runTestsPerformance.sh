@@ -3,7 +3,7 @@ set -m
 set +e
 
 # 🗂️ Pastikan folder laporan ada
-mkdir -p reports/performance
+mkdir -p reports/
 
 echo "======================================="
 echo "🚀 Starting K6 Performance Test"
@@ -54,7 +54,7 @@ fi
 
 echo "======================================="
 echo "🎯 Performance Test Completed"
-echo "📁 Report Folder: reports/performance/"
+echo "📁 Report Folder: reports/"
 echo "======================================="
 
 # Exit dengan kode sesuai hasil

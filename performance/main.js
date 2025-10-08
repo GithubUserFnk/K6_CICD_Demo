@@ -31,7 +31,7 @@ export function handleSummary(data) {
     now.getMinutes()
   ).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
 
-  const filename = `reports/performance/performances-${timestamp}.html`;
+  const filename = `reports/performances-${timestamp}.html`;
 
   return {
     [filename]: htmlReport(data),

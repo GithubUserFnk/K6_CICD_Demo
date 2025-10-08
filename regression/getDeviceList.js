@@ -31,7 +31,7 @@ export function handleSummary(data) {
     now.getMinutes()
   ).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
 
-  const filename = `reports/regression/getDevice-${timestamp}.html`;
+  const filename = `reports/getDeviceRegression-${timestamp}.html`;
 
   return {
     [filename]: htmlReport(data),
