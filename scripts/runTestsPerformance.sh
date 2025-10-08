@@ -14,18 +14,32 @@ if [[ ! -f "$TEST_FILE" ]]; then
   exit 1
 fi
 
-# 🌩️ Tentukan mode eksekusi
+# 🔐 Cek ketersediaan environment variables
 if [[ -n "$K6_CLOUD_TOKEN" ]]; then
+  echo "🔑 K6_CLOUD_TOKEN available: true"
+else
+  echo "🔑 K6_CLOUD_TOKEN available: false"
+fi
+
+if [[ -n "$K6_CLOUD_PROJECT_ID" ]]; then
+  echo "🆔 K6_CLOUD_PROJECT_ID available: true"
+else
+  echo "🆔 K6_CLOUD_PROJECT_ID available: false"
+fi
+
+# 🌩️ Tentukan mode eksekusi
+if [[ -n "$K6_CLOUD_TOKEN" && -n "$K6_CLOUD_PROJECT_ID" ]]; then
   echo "☁️ Running in K6 Cloud mode"
+  echo "   → Project ID: $K6_CLOUD_PROJECT_ID"
   RUN_CMD="k6 cloud"
 else
-  echo "💻 Running locally"
+  echo "💻 Running locally (missing Cloud credentials)"
   RUN_CMD="k6 run"
 fi
 
 # 🧪 Jalankan test
 echo "▶️  Running: $TEST_FILE ..."
-$RUN_CMD "$TEST_FILE" --no-usage-report
+$RUN_CMD "$TEST_FILE"
 TEST_EXIT_CODE=$?
 
 # 📊 Cek hasil exit code
